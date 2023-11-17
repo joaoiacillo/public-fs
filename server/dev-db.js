@@ -1,18 +1,30 @@
 // Dev-purpose db
+/**
+ * @type {{ id: string, alias: string, filename: string, size: number, createdAt: string, active: boolean }[]}
+ */
 const files = [];
 
 console.log("[DB] Created DB");
 
+function map(file) {
+    const { id, alias, filename, size, createdAt } = file;
+    return { id, alias, filename, size, createdAt };
+}
+
 const queryAll = () => {
     console.log("[DB] Querying all active files");
     return files.reduce((activeFiles, file) => {
-        const { id, alias, filename, size, createdAt } = file;
         if (file.active)
-            activeFiles.push({ id, alias, filename, size, createdAt });
+            activeFiles.push(map(file));
 
         return activeFiles;
     }, []);
 };
+
+const queryById = (id) => {
+    const file = files.find(f => f.id === id);
+    return typeof file === "undefined" ? undefined : map(file);
+}
 
 const insert = (id, alias, filename, size) => {
     console.log("[DB] Inserting new file: " + `${alias} -> ${filename}`);
@@ -36,4 +48,4 @@ const remove = (id) => {
     return true;
 };
 
-module.exports = { queryAll, insert, remove };
+module.exports = { queryAll, queryById, insert, remove };
